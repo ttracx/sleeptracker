@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  sleepLogs     SleepLog[]
+  settings      UserSettings?
+  subscription  Subscription?
+}
+
+model SleepLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  bedTime     DateTime
+  wakeTime    DateTime
+  quality     Int      // 1-5 rating
+  notes       String?
+  
+  // Calculated fields
+  duration    Int      // minutes
+  sleepScore  Int      // 0-100
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([userId, bedTime])
+}
+
+model UserSettings {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  targetSleepHours Float   @default(8)
+  bedtimeReminder  String? // HH:mm format
+  darkMode         Boolean @default(true)
+  timezone         String  @default("America/Chicago")
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Subscription {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  stripeCustomerId  String?
+  stripeSubscriptionId String?
+  stripePriceId     String?
+  status            String   @default("inactive") // active, canceled, past_due
+  
+  currentPeriodEnd  DateTime?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
