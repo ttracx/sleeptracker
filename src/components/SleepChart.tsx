@@ -122,7 +122,7 @@ export default function SleepChart() {
               <XAxis dataKey={timeRange === 'week' ? 'day' : 'date'} fontSize={12} />
               <YAxis fontSize={12} />
               <Tooltip 
-                formatter={(value: number) => [`${value} hours`, 'Sleep']}
+                formatter={(value) => [`${value} hours`, 'Sleep']}
                 contentStyle={{ 
                   backgroundColor: 'rgb(31, 41, 55)',
                   border: 'none',
@@ -138,7 +138,7 @@ export default function SleepChart() {
               <XAxis dataKey={timeRange === 'week' ? 'day' : 'date'} fontSize={12} />
               <YAxis fontSize={12} domain={[0, 100]} />
               <Tooltip 
-                formatter={(value: number) => [`${value}/100`, 'Score']}
+                formatter={(value) => [`${value}/100`, 'Score']}
                 contentStyle={{ 
                   backgroundColor: 'rgb(31, 41, 55)',
                   border: 'none',

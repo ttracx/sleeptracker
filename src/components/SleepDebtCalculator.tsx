@@ -26,19 +26,19 @@ export default function SleepDebtCalculator() {
   const lastWeekDebt = calculateSleepDebt(last14to7Days, settings.targetSleepHours)
   const trend = lastWeekDebt - sleepDebt // Positive = improving
 
-  const getDebtLevel = () => {
+  const recommendations: Record<'low' | 'moderate' | 'high', string> = {
+    low: "Great job! Your sleep is on track. Keep up the healthy habits!",
+    moderate: "Consider going to bed 30 minutes earlier this week to catch up.",
+    high: "You have significant sleep debt. Try to add an extra hour of sleep each night."
+  }
+
+  const getDebtLevel = (): { level: 'low' | 'moderate' | 'high', color: string, bg: string, icon: typeof Battery } => {
     if (sleepDebt < 2) return { level: 'low', color: 'text-green-500', bg: 'bg-green-100 dark:bg-green-900/30', icon: Battery }
     if (sleepDebt < 5) return { level: 'moderate', color: 'text-yellow-500', bg: 'bg-yellow-100 dark:bg-yellow-900/30', icon: BatteryLow }
     return { level: 'high', color: 'text-red-500', bg: 'bg-red-100 dark:bg-red-900/30', icon: BatteryWarning }
   }
 
   const { level, color, bg, icon: BatteryIcon } = getDebtLevel()
-
-  const recommendations = {
-    low: "Great job! Your sleep is on track. Keep up the healthy habits!",
-    moderate: "Consider going to bed 30 minutes earlier this week to catch up.",
-    high: "You have significant sleep debt. Try to add an extra hour of sleep each night."
-  }
 
   return (
     <div className={`${bg} rounded-2xl p-6 shadow-lg`}>
